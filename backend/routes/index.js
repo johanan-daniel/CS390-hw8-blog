@@ -24,7 +24,11 @@ router.post('/blog/create-post', async (req, res) => {
 
   const blog = new BlogModel({ content: body.content, title: body.title })
 
-  await blog.save()
+  console.log('HI')
+  await blog.save().catch((err) => {
+    console.log('ERROR', err)
+    res.status(400).send("The request didn't go through")
+  })
 
   return res.send(blog.toObject())
 })

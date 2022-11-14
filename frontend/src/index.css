@@ -1,0 +1,11 @@
+:root {
+  font-family: 'Avenir', sans-serif;
+}
+
+.msg {
+  color: green;
+}
+
+.error {
+  color: red;
+}

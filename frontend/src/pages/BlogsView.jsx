@@ -24,7 +24,12 @@ const BlogsView = () => {
     <div>
       <Nav />
       <h1>My Blogs</h1>
-      {data && data.map((item) => <p key={item._id}>{item.title}</p>)}
+      {data &&
+        data.map((item) => (
+          <p key={item._id}>
+            {item.title}: {item.content}
+          </p>
+        ))}
     </div>
   )
 }
