@@ -1,15 +1,20 @@
-import {RouterProvider, createBrowserRouter} from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from 'react-router-dom'
+import BlogsView from './pages/BlogsView'
 
-import {Index} from "./pages";
+import CreateBlog from './pages/CreateBlog'
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <Index />,
+    path: '/',
+    element: <BlogsView />,
   },
-]);
+  {
+    path: '/create',
+    element: <CreateBlog />,
+  },
+])
 function App() {
-  return <RouterProvider router={router}></RouterProvider>;
+  return <RouterProvider router={router}></RouterProvider>
 }
 
-export default App;
+export default App
