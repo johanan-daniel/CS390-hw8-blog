@@ -6,13 +6,19 @@ export default function CreateBlog() {
   const [content, setContent] = useState('')
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
+  const [password, setPassword] = useState('')
 
   const submitHandler = (e) => {
     e.preventDefault()
 
-    if (!title || !content) {
+    if (!title || !content || !password) {
       console.log('empty request')
       showMessage('empty')
+      return
+    }
+
+    if (password !== "password123") {
+      showMessage("invalid password")
       return
     }
 
@@ -69,6 +75,10 @@ export default function CreateBlog() {
     setContent(e.target.value)
   }
 
+  const passwordHandler = (e) => {
+    setPassword(e.target.value)
+  }
+
   return (
     <div>
       <Nav />
@@ -79,6 +89,13 @@ export default function CreateBlog() {
           onChange={contentHandler}
           value={content}
           placeholder="content"
+        />
+        <label>password</label>
+        <input
+          onChange={passwordHandler}
+          value={password}
+          placeholder="password"
+          type="password"
         />
         <input type="submit" value="Create post" />
       </form>

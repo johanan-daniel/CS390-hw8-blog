@@ -11,14 +11,14 @@ client
   .catch(() => console.log('problem connecting'))
   .finally(() => client.close())
 
-/* GET home page. */
+/* GET all blogs */
 router.get('/blog', async (req, res, next) => {
   const blogs = await BlogModel.find({})
 
   return res.send(blogs.map((blog) => blog.toObject()))
 })
 
-/* POST blogs */
+/* POST new blog */
 router.post('/blog/create-post', async (req, res) => {
   const body = req.body
 
@@ -27,10 +27,30 @@ router.post('/blog/create-post', async (req, res) => {
   console.log('HI')
   await blog.save().catch((err) => {
     console.log('ERROR', err)
-    res.status(400).send("The request didn't go through")
+    return res.status(400).send("The request didn't go through")
   })
 
   return res.send(blog.toObject())
+})
+
+/* PUT edit blog */
+router.put('/blog/edit-post', async (req, res) => {
+  const body = req.body
+
+  const item = await BlogModel.findById(body.id)
+
+  if (!item) {
+    return res.status(404).send('No item found with this id')
+  }
+
+  item.title = body.title
+  item.content = body.content
+
+  await item.save()
+
+  const blogs = await BlogModel.find({})
+
+  return res.send(blogs.map((blog) => blog.toObject()))
 })
 
 export default router
