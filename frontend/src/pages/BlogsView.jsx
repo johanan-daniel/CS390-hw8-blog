@@ -10,11 +10,11 @@ const BlogsView = () => {
   const [content, setContent] = useState('')
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
-  const [password, setPassword] = useState('password123')
+  const [password, setPassword] = useState('')
+
+  const headers = { 'content-type': 'application/json' }
 
   useEffect(() => {
-    const headers = { 'content-type': 'application/json' }
-
     fetch('http://localhost:3000/blog', {
       method: 'GET',
       headers,
@@ -29,8 +29,11 @@ const BlogsView = () => {
 
   const showMessage = (input) => {
     switch (input) {
-      case 'success':
-        setMessage('Post successfully created')
+      case 'edited':
+        setMessage('Post edited')
+        break
+      case 'deleted':
+        setMessage('Post deleted')
         break
       case 'empty':
         setError('Fill in all fields')
@@ -47,11 +50,51 @@ const BlogsView = () => {
     }, 3000)
   }
 
-  const clickHandler = (item) => {
+  const editHandler = (item) => {
     console.log('index', item)
     setTitle(item.title)
     setContent(item.content)
     setPostToEdit(item._id)
+  }
+
+  const deleteHandler = () => {
+    const requestData = JSON.stringify({ id: postToEdit })
+
+    if (!password) {
+      console.log('empty password')
+      showMessage('empty')
+      return
+    }
+
+    if (password !== 'password123') {
+      console.log('invalid password')
+      showMessage('invalid password')
+      return
+    }
+
+    fetch('http://localhost:3000/blog/delete-post', {
+      method: 'DELETE',
+      body: requestData,
+      headers,
+    })
+      .then((data) => {
+        if (data.ok) {
+          setTitle('')
+          setContent('')
+          showMessage('deleted')
+          setPostToEdit('')
+          return data.json()
+        } else {
+          showMessage('error')
+          return data.text().then((text) => Promise.reject(text))
+        }
+      })
+      .then((res) => {
+        setData(res)
+      })
+      .catch((err) => {
+        console.log('error:', err)
+      })
   }
 
   const titleHandler = (e) => {
@@ -60,6 +103,10 @@ const BlogsView = () => {
 
   const contentHandler = (e) => {
     setContent(e.target.value)
+  }
+
+  const passwordHandler = (e) => {
+    setPassword(e.target.value)
   }
 
   const submitHandler = (e) => {
@@ -72,11 +119,11 @@ const BlogsView = () => {
     }
 
     if (password !== 'password123') {
+      console.log('invalid password')
       showMessage('invalid password')
       return
     }
 
-    const headers = { 'content-type': 'application/json' }
     const requestData = JSON.stringify({ title, content, id: postToEdit })
 
     fetch('http://localhost:3000/blog/edit-post', {
@@ -88,7 +135,7 @@ const BlogsView = () => {
         if (data.ok) {
           setTitle('')
           setContent('')
-          showMessage('success')
+          showMessage('edited')
           setPostToEdit('')
           return data.json()
         } else {
@@ -114,6 +161,18 @@ const BlogsView = () => {
             <form onSubmit={submitHandler} key={item._id}>
               <input value={title} onChange={titleHandler} />
               <input value={content} onChange={contentHandler} />
+              <input
+                value={password}
+                onChange={passwordHandler}
+                placeholder="password"
+                type="password"
+              />
+              <button onClick={() => setPostToEdit('')} type="button">
+                cancel
+              </button>
+              <button className="delete" onClick={deleteHandler} type="button">
+                delete
+              </button>
               <input type="submit" value="done" />
             </form>
           )
@@ -121,7 +180,7 @@ const BlogsView = () => {
           row = (
             <p key={item._id}>
               {item.title}: {item.content}
-              <button className="edit" onClick={() => clickHandler(item)}>
+              <button className="edit" onClick={() => editHandler(item)}>
                 edit
               </button>
             </p>
@@ -138,6 +197,10 @@ const BlogsView = () => {
       <Nav />
       <h1>My Blogs</h1>
       {renderList()}
+      <p className={'msg' + (error ? ' error' : '')}>
+        {message}
+        {error}
+      </p>
     </div>
   )
 }

@@ -53,4 +53,21 @@ router.put('/blog/edit-post', async (req, res) => {
   return res.send(blogs.map((blog) => blog.toObject()))
 })
 
+/* DELETE  */
+router.delete('/blog/delete-post', async (req, res) => {
+  const body = req.body
+
+  const item = await BlogModel.findById(body.id)
+
+  if (!item) {
+    return res.status(404).send('No item found with this id')
+  }
+
+  await BlogModel.deleteOne({ _id: body.id })
+
+  const blogs = await BlogModel.find({})
+
+  return res.send(blogs.map((blog) => blog.toObject()))
+})
+
 export default router
