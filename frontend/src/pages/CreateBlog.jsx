@@ -17,8 +17,8 @@ export default function CreateBlog() {
       return
     }
 
-    if (password !== "password123") {
-      showMessage("invalid password")
+    if (password !== 'password123') {
+      showMessage('password')
       return
     }
 
@@ -54,6 +54,9 @@ export default function CreateBlog() {
         break
       case 'empty':
         setError('Fill in all fields')
+        break
+      case 'password':
+        setError('Invalid password')
         break
 
       default:

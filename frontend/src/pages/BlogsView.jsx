@@ -38,6 +38,9 @@ const BlogsView = () => {
       case 'empty':
         setError('Fill in all fields')
         break
+      case 'password':
+        setError('Invalid password')
+        break
 
       default:
         setError('Error in creating post')
@@ -68,7 +71,7 @@ const BlogsView = () => {
 
     if (password !== 'password123') {
       console.log('invalid password')
-      showMessage('invalid password')
+      showMessage('password')
       return
     }
 
@@ -120,7 +123,7 @@ const BlogsView = () => {
 
     if (password !== 'password123') {
       console.log('invalid password')
-      showMessage('invalid password')
+      showMessage('password')
       return
     }
 
